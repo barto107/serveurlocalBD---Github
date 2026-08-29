@@ -236,7 +236,10 @@
                     card.dataset.genre = album.genre ? album.genre.toLowerCase() : "";
 
                     const img = document.createElement('img');
-                    img.src = album.cover ? album.cover : '';
+                    // Détecte automatiquement si on est sur GitHub Pages ou en local pour adapter le chemin
+const isGitHubPages = window.location.hostname.includes('github.io');
+const repoName = isGitHubPages ? '/' + window.location.pathname.split('/')[1] : '';
+img.src = album.cover ? repoName + '/' + album.cover : '';
                     img.alt = album.title;
                     img.onerror = () => { img.src = 'https://via.placeholder.com/200x280?text=Pas+de+couverture'; };
                     
