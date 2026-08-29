@@ -241,7 +241,17 @@ const isGitHubPages = window.location.hostname.includes('github.io');
 const repoName = isGitHubPages ? '/' + window.location.pathname.split('/')[1] : '';
 img.src = album.cover ? repoName + '/' + album.cover : '';
                     img.alt = album.title;
-                    img.onerror = () => { img.src = 'https://via.placeholder.com/200x280?text=Pas+de+couverture'; };
+                    img.onerror = () => { 
+    img.style.display = 'none'; // Cache l'image cassée
+    // Optionnel : affiche un message de remplacement propre
+    if (!card.querySelector('.no-cover-text')) {
+        const noCover = document.createElement('div');
+        noCover.className = 'no-cover-text';
+        noCover.style.cssText = 'height:280px; display:flex; align-items:center; justify-content:center; background:#eee; color:#666; font-size:0.9em; text-align:center; border-radius:4px;';
+        noCover.textContent = 'Pas de couverture';
+        card.insertBefore(noCover, card.firstChild);
+    }
+};
                     
                     img.addEventListener('click', () => {
                         if (album.cover) {
