@@ -19,6 +19,12 @@
         .search-container {
             text-align: center;
             margin-bottom: 30px;
+            position: sticky;
+            top: 0;
+            background-color: #f4f4f9;
+            padding: 15px 0;
+            z-index: 100;
+            box-shadow: 0 4px 6px -4px rgba(0,0,0,0.1);
         }
         .search-container input, .search-container select {
             padding: 10px;
@@ -240,17 +246,15 @@
 
                     const img = document.createElement('img');
                     
-                    // Chargement différé pour éviter de saturer le serveur GitHub
                     img.loading = "lazy";
 
-                    // Détecte automatiquement si on est sur GitHub Pages ou en local pour adapter le chemin
                     const isGitHubPages = window.location.hostname.includes('github.io');
                     const repoName = isGitHubPages ? '/' + window.location.pathname.split('/')[1] : '';
                     img.src = album.cover ? repoName + '/' + album.cover : '';
                     img.alt = album.title;
                     
                     img.onerror = () => { 
-                        img.style.display = 'none'; // Cache l'image cassée
+                        img.style.display = 'none';
                         if (!card.querySelector('.no-cover-text')) {
                             const noCover = document.createElement('div');
                             noCover.className = 'no-cover-text';
@@ -286,7 +290,6 @@
                         card.appendChild(genreDiv);
                     }
 
-                    // Bouton pour copier le chemin du fichier dans le presse-papiers
                     const openBtn = document.createElement('button');
                     openBtn.className = 'album-btn';
                     openBtn.textContent = 'Copier le chemin';
@@ -354,6 +357,7 @@
             document.getElementById('searchInput').value = '';
             document.getElementById('genreFilter').value = '';
             filterCatalog();
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         });
 
         const lightbox = document.getElementById('lightbox');
