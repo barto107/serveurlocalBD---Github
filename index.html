@@ -121,6 +121,9 @@
             font-size: 0.85em;
             margin-top: 8px;
             transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+            width: 100%;
         }
         .album-btn:hover {
             background-color: #219653;
@@ -236,26 +239,30 @@
                     card.dataset.genre = album.genre ? album.genre.toLowerCase() : "";
 
                     const img = document.createElement('img');
+                    
+                    // Chargement différé pour éviter de saturer le serveur GitHub
+                    img.loading = "lazy";
+
                     // Détecte automatiquement si on est sur GitHub Pages ou en local pour adapter le chemin
-const isGitHubPages = window.location.hostname.includes('github.io');
-const repoName = isGitHubPages ? '/' + window.location.pathname.split('/')[1] : '';
-img.src = album.cover ? repoName + '/' + album.cover : '';
+                    const isGitHubPages = window.location.hostname.includes('github.io');
+                    const repoName = isGitHubPages ? '/' + window.location.pathname.split('/')[1] : '';
+                    img.src = album.cover ? repoName + '/' + album.cover : '';
                     img.alt = album.title;
+                    
                     img.onerror = () => { 
-    img.style.display = 'none'; // Cache l'image cassée
-    // Optionnel : affiche un message de remplacement propre
-    if (!card.querySelector('.no-cover-text')) {
-        const noCover = document.createElement('div');
-        noCover.className = 'no-cover-text';
-        noCover.style.cssText = 'height:280px; display:flex; align-items:center; justify-content:center; background:#eee; color:#666; font-size:0.9em; text-align:center; border-radius:4px;';
-        noCover.textContent = 'Pas de couverture';
-        card.insertBefore(noCover, card.firstChild);
-    }
-};
+                        img.style.display = 'none'; // Cache l'image cassée
+                        if (!card.querySelector('.no-cover-text')) {
+                            const noCover = document.createElement('div');
+                            noCover.className = 'no-cover-text';
+                            noCover.style.cssText = 'height:280px; display:flex; align-items:center; justify-content:center; background:#eee; color:#666; font-size:0.9em; text-align:center; border-radius:4px;';
+                            noCover.textContent = 'Pas de couverture';
+                            card.insertBefore(noCover, card.firstChild);
+                        }
+                    };
                     
                     img.addEventListener('click', () => {
                         if (album.cover) {
-                            document.getElementById('lightbox-img').src = album.cover;
+                            document.getElementById('lightbox-img').src = repoName + '/' + album.cover;
                             document.getElementById('lightbox').style.display = 'flex';
                         }
                     });
@@ -279,25 +286,25 @@ img.src = album.cover ? repoName + '/' + album.cover : '';
                         card.appendChild(genreDiv);
                     }
 
-					// Bouton pour copier le chemin du fichier dans le presse-papiers
-					const openBtn = document.createElement('button');
-					openBtn.className = 'album-btn';
-					openBtn.textContent = 'Copier le chemin';
-					const filePath = `\\\\TNAS-BD\\barto107\\bd\\${seriesName}\\${album.filename}`;
+                    // Bouton pour copier le chemin du fichier dans le presse-papiers
+                    const openBtn = document.createElement('button');
+                    openBtn.className = 'album-btn';
+                    openBtn.textContent = 'Copier le chemin';
+                    const filePath = `\\\\TNAS-BD\\barto107\\bd\\${seriesName}\\${album.filename}`;
 
-openBtn.addEventListener('click', () => {
-    navigator.clipboard.writeText(filePath).then(() => {
-        openBtn.textContent = 'Chemin copié !';
-        openBtn.style.backgroundColor = '#2980b9';
-        setTimeout(() => {
-            openBtn.textContent = 'Copier le chemin';
-            openBtn.style.backgroundColor = '#27ae60';
-        }, 2000);
-    }).catch(err => {
-        console.error('Erreur lors de la copie :', err);
-    });
-});
-card.appendChild(openBtn);
+                    openBtn.addEventListener('click', () => {
+                        navigator.clipboard.writeText(filePath).then(() => {
+                            openBtn.textContent = 'Chemin copié !';
+                            openBtn.style.backgroundColor = '#2980b9';
+                            setTimeout(() => {
+                                openBtn.textContent = 'Copier le chemin';
+                                openBtn.style.backgroundColor = '#27ae60';
+                            }, 2000);
+                        }).catch(err => {
+                            console.error('Erreur lors de la copie :', err);
+                        });
+                    });
+                    card.appendChild(openBtn);
 
                     albumsGrid.appendChild(card);
                 });
